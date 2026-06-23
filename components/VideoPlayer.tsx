@@ -177,23 +177,32 @@ export function VideoPlayer() {
           />
         )}
 
-        {/* Fullscreen button — auto-hides after 3s of inactivity */}
-        <button
-          onClick={toggleFullscreen}
-          className="absolute bottom-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-md bg-black/60 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/80"
-          style={{ opacity: controlsVisible ? 1 : 0, pointerEvents: controlsVisible ? 'auto' : 'none' }}
-          title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
-        >
-          {isFullscreen ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
-            </svg>
-          )}
-        </button>
+        {/* For HLS: our fullscreen button. For iframes: hint to use the stream's own button */}
+        {source.kind === 'hls' ? (
+          <button
+            onClick={toggleFullscreen}
+            className="absolute bottom-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-md bg-black/60 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/80"
+            style={{ opacity: controlsVisible ? 1 : 0, pointerEvents: controlsVisible ? 'auto' : 'none' }}
+            title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+          >
+            {isFullscreen ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+              </svg>
+            )}
+          </button>
+        ) : (
+          <div
+            className="absolute bottom-3 right-3 z-20 rounded-md bg-black/60 px-2 py-1 text-xs text-white/70 backdrop-blur-sm transition-all duration-300"
+            style={{ opacity: controlsVisible ? 1 : 0 }}
+          >
+            Use stream's own fullscreen button
+          </div>
+        )}
       </div>
 
       <p className="mt-2 text-center text-xs text-fg-3">{t.playerHint}</p>
