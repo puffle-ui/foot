@@ -11,8 +11,8 @@ type Source =
 
 const SERVERS: { label: string; serv: number; source: Source | null }[] = [
   { label: 'HD 1', serv: 1, source: { kind: 'iframe', url: 'https://player.syria-player.live/albaplayer/beinmax1/' } },
-  { label: 'HD 2', serv: 2, source: { kind: 'iframe', url: 'https://hd.muesra.sbs/albaplayer/oooe/' } },
-  { label: 'HD 3', serv: 3, source: { kind: 'iframe', url: 'https://arena4k-api.gptshehab.workers.dev/player?src=https%3A%2F%2Ftable.houseinventer.com%2Fpdf%2FAzMjD2IyADQPb2tLfQ%2Findex.m3u8&title=%D8%B3%D9%8A%D8%B1%D9%81%D8%B1+1+-+%D9%85%D8%B4%D8%A7%D9%87%D8%AF%D8%A9&outer=appscss.blogspot.com' } },
+  { label: 'HD 2', serv: 2, source: { kind: 'iframe', url: 'https://z1.depoooo.com/albaplayer/bein-1/' } },
+  { label: 'HD 3', serv: 3, source: { kind: 'iframe', url: 'https://hd.muesra.sbs/albaplayer/oooe/' } },
   { label: 'HD 4', serv: 4, source: { kind: 'iframe', url: 'https://www.yalla9live.tv/albaplayer/sport1/?serv=1' } },
 ];
 
