@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import Hls from 'hls.js';
 import { clsx } from 'clsx';
 import { useI18n } from '@/lib/i18n';
@@ -19,7 +19,42 @@ export function VideoPlayer() {
   const { t } = useI18n();
   const [activeServ, setActiveServ] = useState(2);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [controlsVisible, setControlsVisible] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showControls = useCallback(() => {
+    setControlsVisible(true);
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    hideTimer.current = setTimeout(() => setControlsVisible(false), 3000);
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      el.requestFullscreen();
+    }
+  }, []);
+
+  useEffect(() => {
+    const onChange = () => {
+      const fs = !!document.fullscreenElement;
+      setIsFullscreen(fs);
+      if (!fs) {
+        setControlsVisible(true);
+        if (hideTimer.current) clearTimeout(hideTimer.current);
+      }
+    };
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, []);
+
+  useEffect(() => () => { if (hideTimer.current) clearTimeout(hideTimer.current); }, []);
 
   const active = SERVERS.find((s) => s.serv === activeServ) ?? SERVERS[0];
   const source = active.source;
@@ -88,13 +123,18 @@ export function VideoPlayer() {
       {/* 16:9 player — isolated into its own compositor layer so scrolling the
           page doesn't force the video/iframe to repaint (prevents scroll lag). */}
       <div
+        ref={containerRef}
+        onMouseMove={showControls}
+        onMouseEnter={showControls}
+        onMouseLeave={() => { setControlsVisible(false); if (hideTimer.current) clearTimeout(hideTimer.current); }}
         className="relative h-0 w-full overflow-hidden rounded-xl border border-line bg-black"
         style={{
-          paddingBottom: '56.25%',
-          contain: 'content',
+          paddingBottom: isFullscreen ? '0' : '56.25%',
+          height: isFullscreen ? '100%' : undefined,
           transform: 'translateZ(0)',
           willChange: 'transform',
           isolation: 'isolate',
+          cursor: isFullscreen && !controlsVisible ? 'none' : 'default',
         }}
       >
         {source.kind === 'hls' ? (
@@ -136,6 +176,24 @@ export function VideoPlayer() {
             title={`Live stream — ${active.label}`}
           />
         )}
+
+        {/* Fullscreen button — auto-hides after 3s of inactivity */}
+        <button
+          onClick={toggleFullscreen}
+          className="absolute bottom-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-md bg-black/60 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/80"
+          style={{ opacity: controlsVisible ? 1 : 0, pointerEvents: controlsVisible ? 'auto' : 'none' }}
+          title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+        >
+          {isFullscreen ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+            </svg>
+          )}
+        </button>
       </div>
 
       <p className="mt-2 text-center text-xs text-fg-3">{t.playerHint}</p>
