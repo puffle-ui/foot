@@ -10,15 +10,16 @@ type Source =
   | { kind: 'iframe'; url: string };
 
 const SERVERS: { label: string; serv: number; source: Source | null }[] = [
-  { label: 'HD 1', serv: 1, source: null },
-  { label: 'HD 2', serv: 2, source: { kind: 'iframe', url: 'https://www.yalla9live.tv/albaplayer/sport1/?serv=1' } },
-  { label: 'HD 3', serv: 3, source: { kind: 'hls', url: 'https://s3.us-east-2.amazonaws.com/cdng101/hls/0/stream.m3u8' } },
-  { label: 'HD 4', serv: 4, source: { kind: 'iframe', url: 'https://games.ok.ru/videoembed/15136044097233' } },
+  { label: 'HD 1', serv: 1, source: { kind: 'iframe', url: 'https://player.syria-player.live/albaplayer/beinmax1/' } },
+  { label: 'HD 2', serv: 2, source: { kind: 'iframe', url: 'https://hd.muesra.sbs/albaplayer/oooe/' } },
+  { label: 'HD 3', serv: 3, source: { kind: 'iframe', url: 'https://www.yalla9live.tv/albaplayer/sport1/?serv=1' } },
+  { label: 'HD 4', serv: 4, source: { kind: 'hls', url: 'https://s3.us-east-2.amazonaws.com/cdng101/hls/0/stream.m3u8' } },
+  { label: 'HD 5', serv: 5, source: { kind: 'iframe', url: 'https://games.ok.ru/videoembed/15136044097233' } },
 ];
 
 export function VideoPlayer() {
   const { t } = useI18n();
-  const [activeServ, setActiveServ] = useState(2); // default to HD 2
+  const [activeServ, setActiveServ] = useState(1);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [controlsVisible, setControlsVisible] = useState(true);
@@ -57,7 +58,7 @@ export function VideoPlayer() {
 
   useEffect(() => () => { if (hideTimer.current) clearTimeout(hideTimer.current); }, []);
 
-  const active = SERVERS.find((s) => s.serv === activeServ) ?? SERVERS[1];
+  const active = SERVERS.find((s) => s.serv === activeServ) ?? SERVERS[0];
   const source = active.source;
 
   useEffect(() => {
