@@ -9,15 +9,16 @@ type Source =
   | { kind: 'hls'; url: string }
   | { kind: 'iframe'; url: string };
 
-const SERVERS: { label: string; serv: number; source: Source }[] = [
-  { label: 'HD 1', serv: 2, source: { kind: 'iframe', url: 'https://www.yalla9live.tv/albaplayer/sport1/?serv=1' } },
-  { label: 'HD 2', serv: 3, source: { kind: 'hls', url: 'https://s3.us-east-2.amazonaws.com/cdng101/hls/0/stream.m3u8' } },
-  { label: 'HD 3', serv: 4, source: { kind: 'iframe', url: 'https://games.ok.ru/videoembed/15136044097233' } },
+const SERVERS: { label: string; serv: number; source: Source | null }[] = [
+  { label: 'HD 1', serv: 1, source: null },
+  { label: 'HD 2', serv: 2, source: { kind: 'iframe', url: 'https://www.yalla9live.tv/albaplayer/sport1/?serv=1' } },
+  { label: 'HD 3', serv: 3, source: { kind: 'hls', url: 'https://s3.us-east-2.amazonaws.com/cdng101/hls/0/stream.m3u8' } },
+  { label: 'HD 4', serv: 4, source: { kind: 'iframe', url: 'https://games.ok.ru/videoembed/15136044097233' } },
 ];
 
 export function VideoPlayer() {
   const { t } = useI18n();
-  const [activeServ, setActiveServ] = useState(2);
+  const [activeServ, setActiveServ] = useState(2); // default to HD 2
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [controlsVisible, setControlsVisible] = useState(true);
@@ -56,11 +57,11 @@ export function VideoPlayer() {
 
   useEffect(() => () => { if (hideTimer.current) clearTimeout(hideTimer.current); }, []);
 
-  const active = SERVERS.find((s) => s.serv === activeServ) ?? SERVERS[0];
+  const active = SERVERS.find((s) => s.serv === activeServ) ?? SERVERS[1];
   const source = active.source;
 
   useEffect(() => {
-    if (source.kind !== 'hls') return;
+    if (!source || source.kind !== 'hls') return;
     const video = videoRef.current;
     if (!video) return;
 
@@ -92,7 +93,7 @@ export function VideoPlayer() {
       if (hls) hls.destroy();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeServ, source.kind, source.kind === 'hls' ? source.url : '']);
+  }, [activeServ, source?.kind, source?.kind === 'hls' ? source.url : '']);
 
   return (
     <div className="w-full">
@@ -137,7 +138,12 @@ export function VideoPlayer() {
           cursor: isFullscreen && !controlsVisible ? 'none' : 'default',
         }}
       >
-        {source.kind === 'hls' ? (
+        {!source ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black">
+            <span className="text-3xl">📡</span>
+            <p className="text-sm text-white/50">Stream coming soon</p>
+          </div>
+        ) : source.kind === 'hls' ? (
           <>
             {status !== 'ready' && (
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-black">
@@ -195,14 +201,14 @@ export function VideoPlayer() {
               </svg>
             )}
           </button>
-        ) : (
+        ) : source && source.kind === 'iframe' ? (
           <div
             className="absolute bottom-3 right-3 z-20 rounded-md bg-black/60 px-2 py-1 text-xs text-white/70 backdrop-blur-sm transition-all duration-300"
             style={{ opacity: controlsVisible ? 1 : 0 }}
           >
-            Use stream's own fullscreen button
+            Use stream&apos;s own fullscreen button
           </div>
-        )}
+        ) : null}
       </div>
 
       <p className="mt-2 text-center text-xs text-fg-3">{t.playerHint}</p>
