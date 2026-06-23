@@ -43,23 +43,8 @@ export default async function MatchPage({ params }: PageProps) {
       {/* Score banner at the top */}
       <MatchHeader match={match} />
 
-      {/* In-content banner between the score and the player */}
-      <div className="mb-5 flex justify-center">
-        <div className="lg:hidden">
-          <AdSlot type="320x50" />
-        </div>
-        <div className="hidden lg:block">
-          <AdSlot type="728x90" />
-        </div>
-      </div>
-
       {/* Video player */}
       <VideoPlayer />
-
-      {/* Banner below the player */}
-      <div className="mt-6 flex justify-center">
-        <AdSlot type="300x250" />
-      </div>
 
       {/*
         LIVE CHAT PLACEHOLDER

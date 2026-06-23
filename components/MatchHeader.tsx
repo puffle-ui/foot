@@ -37,44 +37,44 @@ export function MatchHeader({ match }: { match: Match }) {
       </div>
 
       {/* Teams + score */}
-      <div className="flex flex-col items-center gap-4 px-4 py-4 sm:flex-row sm:justify-between sm:px-6">
+      <div className="flex items-center justify-between gap-2 px-3 py-4 sm:gap-4 sm:px-6">
         {/* Home */}
-        <div className="flex flex-1 flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <div className="flex flex-1 flex-col items-center gap-1.5 sm:flex-row sm:gap-4">
           <img
             src={homeTeam.crest}
             alt={homeTeam.name}
-            width={56}
-            height={56}
-            className="h-14 w-14 object-contain drop-shadow-xl"
+            width={48}
+            height={48}
+            className="h-10 w-10 object-contain drop-shadow-xl sm:h-14 sm:w-14"
           />
-          <span className="font-bebas text-2xl tracking-wider text-fg sm:text-3xl">
+          <span className="text-center font-bebas text-base leading-tight tracking-wider text-fg sm:text-3xl">
             {homeTeam.name}
           </span>
         </div>
 
         {/* Score / VS */}
-        <div className="px-6">
+        <div className="shrink-0 px-2 sm:px-6">
           {showScore ? (
-            <span className="font-bebas text-5xl tracking-widest text-fg tabular-nums">
+            <span className="font-bebas text-4xl tracking-widest text-fg tabular-nums sm:text-5xl">
               {homeScore}
-              <span className="mx-2 text-fg-3">–</span>
+              <span className="mx-1 text-fg-3 sm:mx-2">–</span>
               {awayScore}
             </span>
           ) : (
-            <span className="font-bebas text-3xl tracking-widest text-fg-3">{t.vs}</span>
+            <span className="font-bebas text-2xl tracking-widest text-fg-3 sm:text-3xl">{t.vs}</span>
           )}
         </div>
 
         {/* Away */}
-        <div className="flex flex-1 flex-col items-center gap-3 sm:flex-row-reverse sm:items-center sm:gap-4">
+        <div className="flex flex-1 flex-col items-center gap-1.5 sm:flex-row-reverse sm:gap-4">
           <img
             src={awayTeam.crest}
             alt={awayTeam.name}
-            width={56}
-            height={56}
-            className="h-14 w-14 object-contain drop-shadow-xl"
+            width={48}
+            height={48}
+            className="h-10 w-10 object-contain drop-shadow-xl sm:h-14 sm:w-14"
           />
-          <span className="font-bebas text-2xl tracking-wider text-fg sm:text-3xl">
+          <span className="text-center font-bebas text-base leading-tight tracking-wider text-fg sm:text-3xl">
             {awayTeam.name}
           </span>
         </div>

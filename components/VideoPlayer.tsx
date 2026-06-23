@@ -132,6 +132,7 @@ export function VideoPlayer() {
         className="relative h-0 w-full overflow-hidden rounded-xl border border-line bg-black"
         style={{
           paddingBottom: isFullscreen ? '0' : '56.25%',
+          minHeight: isFullscreen ? undefined : '220px',
           height: isFullscreen ? '100%' : undefined,
           transform: 'translateZ(0)',
           willChange: 'transform',
@@ -202,13 +203,6 @@ export function VideoPlayer() {
               </svg>
             )}
           </button>
-        ) : source && source.kind === 'iframe' ? (
-          <div
-            className="absolute bottom-3 right-3 z-20 rounded-md bg-black/60 px-2 py-1 text-xs text-white/70 backdrop-blur-sm transition-all duration-300"
-            style={{ opacity: controlsVisible ? 1 : 0 }}
-          >
-            Use stream&apos;s own fullscreen button
-          </div>
         ) : null}
       </div>
 
