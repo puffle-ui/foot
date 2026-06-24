@@ -185,7 +185,7 @@ export function VideoPlayer() {
         )}
 
         {/* For HLS: our fullscreen button. For iframes: hint to use the stream's own button */}
-        {source.kind === 'hls' ? (
+        {source?.kind === 'hls' ? (
           <button
             onClick={toggleFullscreen}
             className="absolute bottom-3 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-md bg-black/60 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/80"
