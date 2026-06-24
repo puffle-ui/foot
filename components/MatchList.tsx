@@ -218,11 +218,36 @@ export function MatchList({ initialMatches }: MatchListProps) {
     .sort((a, b) => a.utcDate.localeCompare(b.utcDate));
   const featured = live[0] ?? upcoming[0] ?? matches[0];
 
-  const groups = groupMatchesByDate(matches, t);
+  // Exclude featured match from the live section to avoid duplication
+  const liveRest = live.filter((m) => m.id !== featured.id);
+
+  const groups = groupMatchesByDate(
+    matches.filter((m) => m.status !== 'IN_PLAY' && m.status !== 'PAUSED'),
+    t,
+  );
 
   return (
     <div className="py-6 space-y-10">
       <FeaturedHero match={featured} />
+
+      {/* Live now section — only shown when other matches are also live */}
+      {liveRest.length > 0 && (
+        <section>
+          <div className="mb-5 flex items-center gap-3">
+            <span className="inline-flex h-2.5 w-2.5 rounded-full bg-red-600 shadow-[0_0_8px_rgba(230,57,70,0.8)]" />
+            <h2 className="font-bebas text-3xl tracking-widest text-fg">Live Now</h2>
+            <div className="h-px flex-1 bg-line" />
+            <span className="text-xs text-fg-3 tabular-nums">
+              {liveRest.length} {liveRest.length !== 1 ? t.matches : t.match}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {liveRest.map((match, index) => (
+              <MatchCard key={match.id} match={match} index={index} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {groups.map((group) => (
         <section key={group.date}>
