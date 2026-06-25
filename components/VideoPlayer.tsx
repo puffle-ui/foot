@@ -9,14 +9,41 @@ type Source =
   | { kind: 'hls'; url: string }
   | { kind: 'iframe'; url: string };
 
-const SERVERS: { label: string; serv: number; source: Source | null }[] = [
+const DEFAULT_SERVERS: { label: string; serv: number; source: Source | null }[] = [
   { label: 'HD 1', serv: 1, source: { kind: 'iframe', url: 'https://hd.muesra.sbs/albaplayer/oooe/' } },
   { label: 'HD 2', serv: 2, source: { kind: 'iframe', url: 'https://player.syria-player.live/albaplayer/beinmax1/' } },
   { label: 'HD 3', serv: 3, source: { kind: 'iframe', url: 'https://z1.depoooo.com/albaplayer/bein-1/' } },
   { label: 'HD 4', serv: 4, source: { kind: 'iframe', url: 'https://www.yalla9live.tv/albaplayer/sport1/?serv=1' } },
 ];
 
-export function VideoPlayer() {
+const MATCH_OVERRIDES: {
+  teams: [string, string];
+  overrides: Partial<Record<number, Source>>;
+}[] = [
+  {
+    teams: ['Japan', 'Sweden'],
+    overrides: {
+      1: { kind: 'iframe', url: 'https://spoort.yala--shoot.online/albaplayer/max4/' },
+    },
+  },
+];
+
+function getServers(homeTeam: string, awayTeam: string) {
+  const match = MATCH_OVERRIDES.find(({ teams }) => {
+    const [a, b] = teams;
+    return (
+      (homeTeam.includes(a) && awayTeam.includes(b)) ||
+      (homeTeam.includes(b) && awayTeam.includes(a))
+    );
+  });
+  if (!match) return DEFAULT_SERVERS;
+  return DEFAULT_SERVERS.map((s) =>
+    match.overrides[s.serv] ? { ...s, source: match.overrides[s.serv]! } : s,
+  );
+}
+
+export function VideoPlayer({ homeTeam = '', awayTeam = '' }: { homeTeam?: string; awayTeam?: string }) {
+  const SERVERS = getServers(homeTeam, awayTeam);
   const { t } = useI18n();
   const [activeServ, setActiveServ] = useState(1);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');

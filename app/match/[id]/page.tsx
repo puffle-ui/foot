@@ -44,7 +44,7 @@ export default async function MatchPage({ params }: PageProps) {
       <MatchHeader match={match} />
 
       {/* Video player */}
-      <VideoPlayer />
+      <VideoPlayer homeTeam={match.homeTeam.name} awayTeam={match.awayTeam.name} />
 
       {/*
         LIVE CHAT PLACEHOLDER
