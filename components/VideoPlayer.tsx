@@ -10,9 +10,9 @@ type Source =
   | { kind: 'iframe'; url: string };
 
 const SERVERS: { label: string; serv: number; source: Source | null }[] = [
-  { label: 'HD 1', serv: 1, source: { kind: 'iframe', url: 'https://player.syria-player.live/albaplayer/beinmax1/' } },
-  { label: 'HD 2', serv: 2, source: { kind: 'iframe', url: 'https://z1.depoooo.com/albaplayer/bein-1/' } },
-  { label: 'HD 3', serv: 3, source: { kind: 'iframe', url: 'https://hd.muesra.sbs/albaplayer/oooe/' } },
+  { label: 'HD 1', serv: 1, source: { kind: 'iframe', url: 'https://hd.muesra.sbs/albaplayer/oooe/' } },
+  { label: 'HD 2', serv: 2, source: { kind: 'iframe', url: 'https://player.syria-player.live/albaplayer/beinmax1/' } },
+  { label: 'HD 3', serv: 3, source: { kind: 'iframe', url: 'https://z1.depoooo.com/albaplayer/bein-1/' } },
   { label: 'HD 4', serv: 4, source: { kind: 'iframe', url: 'https://www.yalla9live.tv/albaplayer/sport1/?serv=1' } },
 ];
 
